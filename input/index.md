@@ -1,5 +1,6 @@
 ---
 Title: Welcome to my new blog
+Layout: _layout
 ---
 # Ciao!
 This is my first post created with **C#** and **Statiq**.

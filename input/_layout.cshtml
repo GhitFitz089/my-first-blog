@@ -1,28 +1,34 @@
+@using Statiq.Common
 <!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@Model.GetString("Title")</title>
+    @* Usiamo l'indicizzatore ["Title"] che è più semplice per il compilatore *@
+    <title>@Model["Title"]</title>
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Il mio Blog da Maker</h1>
-            <nav>Home | Progetti | Chi Sono</nav>
+            <h1>My IT blog</h1>
+            <nav>
+                <a href="/">Home</a> | 
+                <a href="#">Progetti</a> | 
+                <a href="#">Chi Sono</a>
+            </nav>
         </header>
 
         <main>
-            @RenderBody() </main>
+            @RenderBody()
+        </main>
 
         <aside class="sidebar">
             <h3>Info</h3>
-            <p>Sto imparando C# e l'elettronica. Questo è il mio diario.</p>
-            <h3>Link Utili</h3>
+            <p>Diario di un aspirante Maker. Qui imparo C#, elettronica e fai da te.</p>
+            <h3>Link</h3>
             <ul>
-                <li>GitHub</li>
-                <li>Progetti Arduino</li>
+                <li><a href="https://github.com/GhitFitz089">Mio GitHub</a></li>
             </ul>
         </aside>
 
