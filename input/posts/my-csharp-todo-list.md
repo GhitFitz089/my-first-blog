@@ -1,7 +1,7 @@
 ---
 Title: "Uscire dal Tutorial Hell"
 Layout: _layout
-Date: 2023-11-25
+Date: 2025-11-20
 Project: "Sviluppo Blog"
 Theme: "C#"
 Category: "Teoria"

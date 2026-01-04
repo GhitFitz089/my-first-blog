@@ -1,14 +1,59 @@
 ---
 Title: Home Page
 ---
-@using System.Linq
+@using System.Text.RegularExpressions
+@using System.IO
 @using Statiq.Common
 
 @{
     Layout = "_layout";
-
-    // Cerchiamo i file nella cartella posts
     var files = Context.FileSystem.GetInputFiles("posts/*.md");
+}
+
+@functions {
+    public string LeggiMetadato(IFile file, string chiave)
+    {
+        try 
+        {
+            string testo = System.IO.File.ReadAllText(file.Path.FullPath);
+            var match = Regex.Match(testo, $@"^{chiave}:\s*(.+)$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
+            
+            if (match.Success)
+            {
+                var valoreGrezzo = match.Groups[1].Value.Trim();
+
+                // LOGICA INTELLIGENTE PER C#:
+                
+                // CASO 1: È tra virgolette? (Es. Project: "Imparare C#")
+                if (valoreGrezzo.StartsWith("\""))
+                {
+                    // Cerchiamo la virgoletta di chiusura (partendo dal secondo carattere)
+                    int fineVirgolette = valoreGrezzo.IndexOf('"', 1);
+                    
+                    if (fineVirgolette > 0)
+                    {
+                        // Prendiamo esattamente ciò che sta dentro le virgolette
+                        // Ignorando qualsiasi # o commento che venga dopo
+                        return valoreGrezzo.Substring(1, fineVirgolette - 1);
+                    }
+                }
+
+                // CASO 2: Non è tra virgolette (Es. Theme: Elettronica # commento)
+                // Qui il # è sicuramente un commento
+                if (valoreGrezzo.Contains("#"))
+                {
+                    valoreGrezzo = valoreGrezzo.Split('#')[0];
+                }
+
+                return valoreGrezzo.Trim().Trim('"');
+            }
+            return null;
+        }
+        catch
+        {
+            return null;
+        }
+    }
 }
 
 <h1>Benvenuti nel mio "Digital Garden"</h1>
@@ -24,16 +69,28 @@ Title: Home Page
     @foreach (var file in files)
     {
         var nomeFile = file.Path.FileNameWithoutExtension.ToString();
+        
+        // Lettura dati puliti
+        var titolo = LeggiMetadato(file, "Title") ?? nomeFile;
+        var progetto = LeggiMetadato(file, "Project") ?? "-";
+        var tema = LeggiMetadato(file, "Theme") ?? "GENERICO";
+        var data = LeggiMetadato(file, "Date") ?? "N/A";
+
         var link = $"/posts/{nomeFile}.html";
 
         <li style="margin-bottom: 20px; border-left: 4px solid #333; padding-left: 15px;">
+            <span style="color: #666; font-size: 0.8em; text-transform: uppercase;">
+                [@tema]
+            </span>
+            <br />
+            
             <a href="@link" style="font-size: 1.2em; font-weight: bold; text-decoration: none; color: #000;">
-                @nomeFile
+                @titolo
             </a>
             <br />
-            @* CORREZIONE QUI SOTTO: *@
+            
             <small style="color: #888;">
-                File: @(nomeFile).md
+                Progetto: <strong>@progetto</strong> | Data: @data
             </small>
         </li>
     }
