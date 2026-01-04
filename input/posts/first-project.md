@@ -1,6 +1,10 @@
 ---
-Title: Il mio primo esperimento con i LED
+Title: "Il mio primo esperimento con i LED"
 Layout: _layout
+Date: 2023-11-20
+Project: "Imparare Arduino"   # Nome del progetto specifico
+Theme: "Elettronica"          # Il macrotema (andrà a sinistra nel diagramma)
+Category: "Update"            # La tipologia di post
 ---
 # Progetto LED lampeggiante
 Oggi ho provato a far lampeggiare un LED con Arduino. 

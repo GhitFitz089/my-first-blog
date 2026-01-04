@@ -1,0 +1,45 @@
+---
+Title: Home Page
+---
+@using System.Linq
+@using Statiq.Common
+
+@{
+    Layout = "_layout";
+
+    // Cerchiamo i file nella cartella posts
+    var files = Context.FileSystem.GetInputFiles("posts/*.md");
+}
+
+<h1>Benvenuti nel mio "Digital Garden"</h1>
+<p>
+    Questo blog documenta il mio percorso tecnico tra famiglia e lavoro.
+</p>
+
+<hr />
+
+<h2>Ultimi Aggiornamenti</h2>
+
+<ul style="list-style-type: none; padding-left: 0;">
+    @foreach (var file in files)
+    {
+        var nomeFile = file.Path.FileNameWithoutExtension.ToString();
+        var link = $"/posts/{nomeFile}.html";
+
+        <li style="margin-bottom: 20px; border-left: 4px solid #333; padding-left: 15px;">
+            <a href="@link" style="font-size: 1.2em; font-weight: bold; text-decoration: none; color: #000;">
+                @nomeFile
+            </a>
+            <br />
+            @* CORREZIONE QUI SOTTO: *@
+            <small style="color: #888;">
+                File: @(nomeFile).md
+            </small>
+        </li>
+    }
+</ul>
+
+@if (!files.Any())
+{
+    <p style="color: red;">⚠️ Nessun post trovato in input/posts/</p>
+}

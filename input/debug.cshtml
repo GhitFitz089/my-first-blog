@@ -1,0 +1,35 @@
+---
+Title: Debug Files Grezzi
+Layout: _layout
+---
+@using Statiq.Common
+
+@{
+    // Usiamo Context.Inputs: sono i file fisici che Statiq ha trovato sul disco.
+    var rawFiles = Context.Inputs;
+}
+
+<h1>🔍 Analisi File su Disco</h1>
+<p>
+    Statiq ha trovato fisicamente <strong>@rawFiles.Count()</strong> file nella cartella di input.
+</p>
+
+<table border="1" style="border-collapse: collapse; width: 100%;">
+    <thead style="background: #ddd;">
+        <tr>
+            <th>Nome File (Source)</th>
+            <th>Estensione</th>
+            <th>Statiq lo vede?</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var file in rawFiles)
+        {
+            <tr>
+                <td>@file.Source.FileName</td>
+                <td>@file.Source.Extension</td>
+                <td style="color: green; font-weight: bold;">✅ Rilevato</td>
+            </tr>
+        }
+    </tbody>
+</table>
