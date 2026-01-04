@@ -4,10 +4,45 @@ Title: Home Page
 @using System.Text.RegularExpressions
 @using System.IO
 @using Statiq.Common
+@using System.Globalization
 
 @{
     Layout = "_layout";
+    
+    // 1. Troviamo i file fisici
     var files = Context.FileSystem.GetInputFiles("posts/*.md");
+
+    // 2. "PRE-PROCESSO": Leggiamo tutti i dati e li mettiamo in una lista ordinata
+    var posts = files.Select(file => 
+    {
+        // Leggiamo i metadati usando la funzione Helper
+        var nomeFile = file.Path.FileNameWithoutExtension.ToString();
+        var titolo = LeggiMetadato(file, "Title") ?? nomeFile;
+        var progetto = LeggiMetadato(file, "Project") ?? "-";
+        var tema = LeggiMetadato(file, "Theme") ?? "GENERICO";
+        var dataString = LeggiMetadato(file, "Date");
+        
+        // Convertiamo la stringa data in un oggetto Data vero per poter ordinare
+        // Se la data manca o è scritta male, usiamo "MinValue" (così finisce in fondo alla lista)
+        DateTime data;
+        if (!DateTime.TryParse(dataString, out data))
+        {
+            data = DateTime.MinValue;
+        }
+
+        // Creiamo un "oggetto anonimo" con tutti i dati pronti
+        return new 
+        {
+            Titolo = titolo,
+            Progetto = progetto,
+            Tema = tema,
+            Data = data,
+            Link = $"/posts/{nomeFile}.html",
+            DataLeggibile = data != DateTime.MinValue ? data.ToShortDateString() : "N/A"
+        };
+    })
+    .OrderByDescending(p => p.Data) // <--- QUI AVVIENE LA MAGIA DELL'ORDINAMENTO
+    .ToList();
 }
 
 @functions {
@@ -22,24 +57,17 @@ Title: Home Page
             {
                 var valoreGrezzo = match.Groups[1].Value.Trim();
 
-                // LOGICA INTELLIGENTE PER C#:
-                
-                // CASO 1: È tra virgolette? (Es. Project: "Imparare C#")
+                // Gestione virgolette per proteggere stringhe come "C#"
                 if (valoreGrezzo.StartsWith("\""))
                 {
-                    // Cerchiamo la virgoletta di chiusura (partendo dal secondo carattere)
                     int fineVirgolette = valoreGrezzo.IndexOf('"', 1);
-                    
                     if (fineVirgolette > 0)
                     {
-                        // Prendiamo esattamente ciò che sta dentro le virgolette
-                        // Ignorando qualsiasi # o commento che venga dopo
                         return valoreGrezzo.Substring(1, fineVirgolette - 1);
                     }
                 }
 
-                // CASO 2: Non è tra virgolette (Es. Theme: Elettronica # commento)
-                // Qui il # è sicuramente un commento
+                // Gestione commenti
                 if (valoreGrezzo.Contains("#"))
                 {
                     valoreGrezzo = valoreGrezzo.Split('#')[0];
@@ -66,37 +94,27 @@ Title: Home Page
 <h2>Ultimi Aggiornamenti</h2>
 
 <ul style="list-style-type: none; padding-left: 0;">
-    @foreach (var file in files)
+    @foreach (var post in posts)
     {
-        var nomeFile = file.Path.FileNameWithoutExtension.ToString();
-        
-        // Lettura dati puliti
-        var titolo = LeggiMetadato(file, "Title") ?? nomeFile;
-        var progetto = LeggiMetadato(file, "Project") ?? "-";
-        var tema = LeggiMetadato(file, "Theme") ?? "GENERICO";
-        var data = LeggiMetadato(file, "Date") ?? "N/A";
-
-        var link = $"/posts/{nomeFile}.html";
-
         <li style="margin-bottom: 20px; border-left: 4px solid #333; padding-left: 15px;">
             <span style="color: #666; font-size: 0.8em; text-transform: uppercase;">
-                [@tema]
+                [@post.Tema]
             </span>
             <br />
             
-            <a href="@link" style="font-size: 1.2em; font-weight: bold; text-decoration: none; color: #000;">
-                @titolo
+            <a href="@post.Link" style="font-size: 1.2em; font-weight: bold; text-decoration: none; color: #000;">
+                @post.Titolo
             </a>
             <br />
             
             <small style="color: #888;">
-                Progetto: <strong>@progetto</strong> | Data: @data
+                Progetto: <strong>@post.Progetto</strong> | Data: @post.DataLeggibile
             </small>
         </li>
     }
 </ul>
 
-@if (!files.Any())
+@if (!posts.Any())
 {
     <p style="color: red;">⚠️ Nessun post trovato in input/posts/</p>
 }
