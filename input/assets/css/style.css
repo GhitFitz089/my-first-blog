@@ -1,35 +1,122 @@
-/* Impostazioni generali: stile pulito e leggibile */
+/* =========================
+   Impostazioni generali
+   ========================= */
+
 body {
-    font-family: 'Georgia', serif; /* Font stile diario, molto leggibile */
+    font-family: 'Georgia', serif; /* Stile diario, leggibile */
     line-height: 1.6;
     color: #333;
     margin: 0;
     background-color: #f4f4f4;
 }
 
+/* =========================
+   Layout principale
+   ========================= */
+
 .container {
     max-width: 1000px;
     margin: 0 auto;
     padding: 20px;
     display: grid;
-    /* Creiamo 2 colonne: la prima larga 3 parti, la seconda 1 parte */
     grid-template-columns: 3fr 1fr;
-    grid-template-areas: 
+    grid-template-areas:
         "header header"
         "main sidebar"
         "footer footer";
     gap: 20px;
 }
 
-header { grid-area: header; border-bottom: 2px solid #333; padding-bottom: 10px; }
-main { grid-area: main; background: white; padding: 20px; border-radius: 5px; }
-aside { grid-area: sidebar; background: #eee; padding: 15px; font-size: 0.9em; }
-footer { grid-area: footer; text-align: center; font-size: 0.8em; margin-top: 20px; }
+header {
+    grid-area: header;
+    border-bottom: 2px solid #333;
+    padding-bottom: 10px;
+}
 
-/* Responsive: se lo schermo è piccolo, metti tutto in una colonna */
+main {
+    grid-area: main;
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+aside {
+    grid-area: sidebar;
+    background: #eee;
+    padding: 15px;
+    font-size: 0.9em;
+}
+
+footer {
+    grid-area: footer;
+    text-align: center;
+    font-size: 0.8em;
+    margin-top: 20px;
+}
+
+/* =========================
+   Lista post (Home)
+   ========================= */
+
+.post-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+}
+
+.post-item {
+    margin-bottom: 25px;
+    padding-left: 15px;
+    border-left: 4px solid #333;
+}
+
+.post-theme {
+    display: block;
+    font-size: 0.75rem;
+    color: #666;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.post-title {
+    display: block;
+    font-size: 1.2rem;
+    font-weight: bold;
+    text-decoration: none;
+    color: #000;
+    margin-bottom: 4px;
+}
+
+.post-title:hover {
+    text-decoration: underline;
+}
+
+.post-meta {
+    font-size: 0.8rem;
+    color: #888;
+}
+
+/* Fallback quando non ci sono post */
+.post-empty {
+    color: #999;
+    font-style: italic;
+}
+
+/* =========================
+   Responsive
+   ========================= */
+
 @media (max-width: 768px) {
     .container {
         grid-template-columns: 1fr;
-        grid-template-areas: "header" "main" "sidebar" "footer";
+        grid-template-areas:
+            "header"
+            "main"
+            "sidebar"
+            "footer";
+    }
+
+    .post-item {
+        border-left-width: 3px;
     }
 }

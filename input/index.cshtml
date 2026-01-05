@@ -1,120 +1,66 @@
 ---
 Title: Home Page
 ---
-@using System.Text.RegularExpressions
-@using System.IO
 @using Statiq.Common
 @using System.Globalization
 
 @{
     Layout = "_layout";
-    
-    // 1. Troviamo i file fisici
-    var files = Context.FileSystem.GetInputFiles("posts/*.md");
 
-    // 2. "PRE-PROCESSO": Leggiamo tutti i dati e li mettiamo in una lista ordinata
-    var posts = files.Select(file => 
-    {
-        // Leggiamo i metadati usando la funzione Helper
-        var nomeFile = file.Path.FileNameWithoutExtension.ToString();
-        var titolo = LeggiMetadato(file, "Title") ?? nomeFile;
-        var progetto = LeggiMetadato(file, "Project") ?? "-";
-        var tema = LeggiMetadato(file, "Theme") ?? "GENERICO";
-        var dataString = LeggiMetadato(file, "Date");
-        
-        // Convertiamo la stringa data in un oggetto Data vero per poter ordinare
-        // Se la data manca o è scritta male, usiamo "MinValue" (così finisce in fondo alla lista)
-        DateTime data;
-        if (!DateTime.TryParse(dataString, out data))
+    // I post Markdown finiscono nella pipeline "Content"
+    var posts = Context.Outputs
+        .FromPipeline("Content")
+        .Where(p =>
+            p.Source.Extension == ".md" &&
+            p.ContainsKey("Date"))
+        .OrderByDescending(p => p.GetDateTime("Date"))
+        .Select(p => new
         {
-            data = DateTime.MinValue;
-        }
-
-        // Creiamo un "oggetto anonimo" con tutti i dati pronti
-        return new 
-        {
-            Titolo = titolo,
-            Progetto = progetto,
-            Tema = tema,
-            Data = data,
-            Link = $"/posts/{nomeFile}.html",
-            DataLeggibile = data != DateTime.MinValue ? data.ToShortDateString() : "N/A"
-        };
-    })
-    .OrderByDescending(p => p.Data) // <--- QUI AVVIENE LA MAGIA DELL'ORDINAMENTO
-    .ToList();
-}
-
-@functions {
-    public string LeggiMetadato(IFile file, string chiave)
-    {
-        try 
-        {
-            string testo = System.IO.File.ReadAllText(file.Path.FullPath);
-            var match = Regex.Match(testo, $@"^{chiave}:\s*(.+)$", RegexOptions.Multiline | RegexOptions.IgnoreCase);
-            
-            if (match.Success)
-            {
-                var valoreGrezzo = match.Groups[1].Value.Trim();
-
-                // Gestione virgolette per proteggere stringhe come "C#"
-                if (valoreGrezzo.StartsWith("\""))
-                {
-                    int fineVirgolette = valoreGrezzo.IndexOf('"', 1);
-                    if (fineVirgolette > 0)
-                    {
-                        return valoreGrezzo.Substring(1, fineVirgolette - 1);
-                    }
-                }
-
-                // Gestione commenti
-                if (valoreGrezzo.Contains("#"))
-                {
-                    valoreGrezzo = valoreGrezzo.Split('#')[0];
-                }
-
-                return valoreGrezzo.Trim().Trim('"');
-            }
-            return null;
-        }
-        catch
-        {
-            return null;
-        }
-    }
+            Titolo = p.GetString("Title") ?? p.Source.FileNameWithoutExtension.FullPath,
+            Progetto = p.GetString("Project") ?? "-",
+            Tema = p.GetString("Theme") ?? "GENERICO",
+            DataLeggibile = p.GetDateTime("Date")
+                .ToString("d", CultureInfo.GetCultureInfo("it-IT")),
+            Link = p.GetLink()
+        })
+        .ToList();
 }
 
 <h1>Benvenuti nel mio "Digital Garden"</h1>
+
 <p>
-    Questo blog documenta il mio percorso tecnico tra famiglia e lavoro.
+    Questo blog documenta il mio percorso tecnico tra sviluppo software,
+    elettronica, fai-da-te e sperimentazione.
 </p>
 
 <hr />
 
-<h2>Ultimi Aggiornamenti</h2>
+<h2>Ultimi aggiornamenti</h2>
 
-<ul style="list-style-type: none; padding-left: 0;">
-    @foreach (var post in posts)
-    {
-        <li style="margin-bottom: 20px; border-left: 4px solid #333; padding-left: 15px;">
-            <span style="color: #666; font-size: 0.8em; text-transform: uppercase;">
-                [@post.Tema]
-            </span>
-            <br />
-            
-            <a href="@post.Link" style="font-size: 1.2em; font-weight: bold; text-decoration: none; color: #000;">
-                @post.Titolo
-            </a>
-            <br />
-            
-            <small style="color: #888;">
-                Progetto: <strong>@post.Progetto</strong> | Data: @post.DataLeggibile
-            </small>
-        </li>
-    }
-</ul>
-
-@if (!posts.Any())
+@if (posts.Any())
 {
-    <p style="color: red;">⚠️ Nessun post trovato in input/posts/</p>
+    <ul class="post-list">
+        @foreach (var post in posts)
+        {
+            <li class="post-item">
+                <span class="post-theme">
+                    @post.Tema
+                </span>
+
+                <a class="post-title" href="@post.Link">
+                    @post.Titolo
+                </a>
+
+                <small class="post-meta">
+                    Progetto: <strong>@post.Progetto</strong> |
+                    Data: @post.DataLeggibile
+                </small>
+            </li>
+        }
+    </ul>
 }
+else
+{
+    <p class="post-empty">Nessun post trovato.</p>
+}
+
