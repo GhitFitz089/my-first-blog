@@ -55,6 +55,57 @@ footer {
 }
 
 /* =========================
+   Sezione "Scegli un percorso"
+   ========================= */
+
+.home-paths {
+    margin: 30px 0;
+}
+
+.path-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.path-item {
+    border: 2px solid #333;
+    border-radius: 6px;
+    padding: 15px;
+    background: #fafafa;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.path-item h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.1rem;
+}
+
+.path-item p {
+    margin: 0 0 10px 0;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.path-item a {
+    align-self: flex-start;
+    font-size: 0.85rem;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: auto;
+}
+
+/* Hover leggero, non marketing */
+.path-item:hover {
+    background: #f0f0f0;
+}
+
+/* =========================
    Lista post (Home)
    ========================= */
 
@@ -96,11 +147,6 @@ footer {
     color: #888;
 }
 
-/* Fallback quando non ci sono post */
-.post-empty {
-    color: #999;
-    font-style: italic;
-}
 
 /* =========================
    Responsive
@@ -118,5 +164,8 @@ footer {
 
     .post-item {
         border-left-width: 3px;
+    }
+    .path-list {
+        grid-template-columns: 1fr;
     }
 }
