@@ -1,6 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Statiq.App;
 using Statiq.Web;
+using MyStaticSite.Pipelines; 
+// importing the ProjectsPipeline class from the MyStaticSite.Pipelines 
+// namespace. This allows us to use the ProjectsPipeline in our application.
 
 namespace MyStaticSite
 {
@@ -10,6 +13,9 @@ namespace MyStaticSite
             await Bootstrapper
                 .Factory
                 .CreateWeb(args)
+                .AddPipeline<ProjectsPipeline>()
+                // adding the ProjectsPipeline to the application. This means 
+                // that the ProjectsPipeline will be executed as part of the application's processing pipeline.
                 .RunAsync();
     }
     // The above code is the entry point for a Statiq web application.
