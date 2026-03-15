@@ -55,54 +55,68 @@ footer {
 }
 
 /* =========================
-   Sezione "Scegli un Progetto"
+   Sezione progetti in home
    ========================= */
 
 .home-projects {
     margin: 30px 0;
 }
 
-.project-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+.section-intro {
+    color: #555;
+    margin-bottom: 15px;
 }
 
-.project-item {
+.projects-scroll {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+    scroll-snap-type: x proximity;
+}
+
+.project-card {
+    flex: 0 0 320px;
+    background: #fafafa;
     border: 2px solid #333;
     border-radius: 6px;
-    padding: 15px;
-    background: #fafafa;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    padding: 16px;
+    box-sizing: border-box;
+    scroll-snap-align: start;
 }
 
-.project-item h3 {
-    margin: 0 0 8px 0;
-    font-size: 1.1rem;
+.project-status {
+    display: inline-block;
+    margin-bottom: 10px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #666;
 }
 
-.project-item p {
+.project-card-title {
     margin: 0 0 10px 0;
-    font-size: 0.9rem;
-    color: #555;
+    font-size: 1.2rem;
 }
 
-.project-item a {
-    align-self: flex-start;
-    font-size: 0.85rem;
+.project-card-title a {
     text-decoration: none;
-    font-weight: bold;
-    margin-top: auto;
+    color: #000;
 }
 
-/* Hover leggero, non marketing */
-.project-item:hover {
-    background: #f0f0f0;
+.project-card-title a:hover {
+    text-decoration: underline;
+}
+
+.project-card-summary {
+    margin: 0 0 12px 0;
+    color: #555;
+    font-size: 0.95rem;
+}
+
+.project-card-link {
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-decoration: none;
 }
 
 /* =========================
@@ -153,6 +167,9 @@ footer {
    ========================= */
 
 @media (max-width: 768px) {
+    .project-card {
+        flex: 0 0 85%;
+    }
     .container {
         grid-template-columns: 1fr;
         grid-template-areas:

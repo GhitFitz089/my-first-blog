@@ -10,20 +10,35 @@ Title: Home Page
     // I post Markdown finiscono nella pipeline "Content"
     var posts = Context.Outputs
         .FromPipeline("Content")
-        .Where(p =>
+        .Where(p =>// Filtriamo solo i file Markdown che hanno una data
             p.Source.Extension == ".md" &&
             p.ContainsKey("Date"))
         .OrderByDescending(p => p.GetDateTime("Date"))
         .Select(p => new
         {
-            Titolo = p.GetString("Title") ?? p.Source.FileNameWithoutExtension.FullPath,
-            Progetto = p.GetString("Project") ?? "-",
+            Titolo = p.GetString("Title") ?? p.Source.FileNameWithoutExtension.FullPath, // Se non c'è un titolo, usiamo il nome del file
+            Progetto = p.GetString("Project") ?? "-", // Se non c'è un progetto associato, mostriamo un trattino
             Tema = p.GetString("Theme") ?? "GENERICO",
             DataLeggibile = p.GetDateTime("Date")
                 .ToString("d", CultureInfo.GetCultureInfo("it-IT")),
             Link = p.GetLink()
         })
         .ToList();
+
+    var projects = Context.Outputs
+        .FromPipeline("Content")
+        .Where(d =>// Filtriamo solo i documenti che hanno un metadato "Type" uguale a "Project"
+            d.ContainsKey("Type") &&
+            d.GetString("Type") == "Project")
+        .Select(d => new // Creiamo un oggetto anonimo per ogni progetto, con i dati che ci interessano
+        {
+            Titolo = d.GetString("Title") ?? d.Source.FileNameWithoutExtension.FullPath,
+            Descrizione = d.GetString("Summary") ?? "Nessuna descrizione disponibile.",
+            Stato = d.GetString("Status") ?? "",
+            Link = d.GetLink()
+        })
+        .ToList();     
+
 }
 
 <h1>Benvenuti nel mio "Digital Garden"</h1>
@@ -36,35 +51,39 @@ Title: Home Page
 <hr />
 
 <section class="home-projects">
-    <h2>Scegli un progetto</h2>
-    <ul class="project-list">
-        <li class="project-item">
-            <h3>Il mio blog in Statiq</h3>
-            <p>
-                Un diario di sviluppo del mio blog personale, costruito con Statiq.
-                Dalla configurazione iniziale alla gestione dei contenuti, condivido
-                le scelte tecniche e le sfide affrontate.
-            </p>
-            <a href="/projects">Il mio blog in Statiq →</a>
-        </li>
-        
-        <li class="project-item">
-            <h3>Home server & self hosting</h3>
-            <p>
-                Esplorazione del mondo del self hosting, con focus su Home Assistant,
-                Nextcloud e altre soluzioni per portare i servizi online a casa.
-            </p>
-            <a href="/projects">Home server & self hosting →</a>
-        </li>
+    <h2>Progetti</h2>
+    <p class="section-intro">
+        Alcuni dei progetti a cui sto lavorando o che ho completato. Clicca su un progetto per saperne di più.
+    </p>
+    @if (projects.Any())
+    {
+        <div class="project-scroll">
+            @foreach (var project in projects)
+            {
+                <article class ="project-card">
+                    @if (!string.IsNullOrWhiteSpace(project.Stato)) // Se lo stato è presente, mostriamolo
+                    {
+                        <span class="project-status">@project.Stato</span>
+                    }
+                    <h3 class="project-card-title">
+                        <a href="@project.Link">@project.Titolo</a>
+                    </h3>
 
-        <li class="project-item">
-            <h3>Sensore di parcheggio per il garage</h3>
-            <p>
-                Progetto di Elettronica e IoT per aiutare mia moglie a parcheggiare in garage senza occupare due posti.
-            </p>
-            <a href="/projects">Sensore di parcheggio per il garage →</a>
-        </li>
-    </ul>
+                    <p class="project-card-summary">
+                        @project.Descrizione
+                    </p>
+
+                    <a class="project-card-link" href="@project.Link">
+                        Vai al progetto →
+                    </a>
+                </article>
+            }
+        </div>
+    }
+    else
+    {
+        <p class="project-empty">Nessun progetto trovato.</p>
+    }
 </section>
 
 <h2>Ultimi aggiornamenti</h2>

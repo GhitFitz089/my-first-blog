@@ -1,7 +1,7 @@
 ---
 Title: "Maker Lab"
 Type: Project
-Layout: _projectLayout
+Layout: _Layout
 Slug: maker-lab
 Status: Paused
 StartDate: 2025-11-20

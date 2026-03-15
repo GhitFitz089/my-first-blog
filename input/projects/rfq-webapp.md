@@ -1,7 +1,7 @@
 ---
 Title: "RFQ Web App"
 Type: Project
-Layout: _projectLayout
+Layout: _Layout
 Slug: rfq-webapp
 Status: InProgress
 StartDate: 2025-07-01

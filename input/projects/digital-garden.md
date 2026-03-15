@@ -1,7 +1,7 @@
 ---
 Title: "Digital Garden"
 Type: Project
-Layout: _projectLayout
+Layout: _Layout
 Slug: digital-garden
 Status: InProgress
 StartDate: 2026-01-10
