@@ -55,14 +55,14 @@ footer {
 }
 
 /* =========================
-   Sezione "Scegli un percorso"
+   Sezione "Scegli un Progetto"
    ========================= */
 
-.home-paths {
+.home-projects {
     margin: 30px 0;
 }
 
-.path-list {
+.project-list {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -71,7 +71,7 @@ footer {
     gap: 20px;
 }
 
-.path-item {
+.project-item {
     border: 2px solid #333;
     border-radius: 6px;
     padding: 15px;
@@ -81,18 +81,18 @@ footer {
     justify-content: space-between;
 }
 
-.path-item h3 {
+.project-item h3 {
     margin: 0 0 8px 0;
     font-size: 1.1rem;
 }
 
-.path-item p {
+.project-item p {
     margin: 0 0 10px 0;
     font-size: 0.9rem;
     color: #555;
 }
 
-.path-item a {
+.project-item a {
     align-self: flex-start;
     font-size: 0.85rem;
     text-decoration: none;
@@ -101,7 +101,7 @@ footer {
 }
 
 /* Hover leggero, non marketing */
-.path-item:hover {
+.project-item:hover {
     background: #f0f0f0;
 }
 
