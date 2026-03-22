@@ -9,7 +9,11 @@
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 <body>
-    <div class="container">
+    @{
+    var isHomePage = Document.GetLink() == "/" || Document.GetLink() == "/index.html";
+}
+
+<div class="container @(isHomePage ? "container--home" : "")">
         <header>
             <h1>My IT blog</h1>
             <nav>

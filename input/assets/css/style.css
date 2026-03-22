@@ -27,31 +27,25 @@ body {
     gap: 20px;
 }
 
-header {
-    grid-area: header;
-    border-bottom: 2px solid #333;
-    padding-bottom: 10px;
-}
-
+header { grid-area: header; border-bottom: 2px solid #333; padding-bottom: 10px; }
 main {
     grid-area: main;
     background: white;
     padding: 20px;
     border-radius: 5px;
+    min-width: 0;
 }
+aside { grid-area: sidebar; background: #eee; padding: 15px; font-size: 0.9em; }
+footer { grid-area: footer; text-align: center; font-size: 0.8em; margin-top: 20px; }
 
-aside {
-    grid-area: sidebar;
-    background: #eee;
-    padding: 15px;
-    font-size: 0.9em;
-}
-
-footer {
-    grid-area: footer;
-    text-align: center;
-    font-size: 0.8em;
-    margin-top: 20px;
+/* Home senza sidebar */
+.container--home {
+    max-width: 1400px;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+        "header"
+        "main"
+        "footer";
 }
 
 /* =========================
@@ -60,6 +54,7 @@ footer {
 
 .home-projects {
     margin: 30px 0;
+    max-width: 100%;
 }
 
 .section-intro {
@@ -67,22 +62,47 @@ footer {
     margin-bottom: 15px;
 }
 
+.projects-scroll-shell {
+    position: relative;
+    max-width: 100%;
+}
+
 .projects-scroll {
     display: flex;
-    gap: 20px;
+    flex-wrap: nowrap;
+    gap: 24px;
+    width: 100%;
+    max-width: 100%;
     overflow-x: auto;
-    padding-bottom: 10px;
+    overflow-y: hidden;
+    padding: 10px 0 10px 0;
+    box-sizing: border-box;
     scroll-snap-type: x proximity;
+    scroll-behavior: smooth;
+
+    /* nasconde scrollbar Firefox */
+    scrollbar-width: none;
+    /* evita che la pagina intera si allarghi */
+    min-width: 0;
+}
+
+/* nasconde scrollbar Chrome / Edge / Safari */
+.projects-scroll::-webkit-scrollbar {
+    display: none;
 }
 
 .project-card {
-    flex: 0 0 320px;
+    flex: 0 0 calc((100% - 48px) / 3);
+    max-width: calc((100% - 48px) / 3);
     background: #fafafa;
     border: 2px solid #333;
-    border-radius: 6px;
-    padding: 16px;
+    border-radius: 8px;
+    padding: 18px;
     box-sizing: border-box;
     scroll-snap-align: start;
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
 }
 
 .project-status {
@@ -96,6 +116,7 @@ footer {
 .project-card-title {
     margin: 0 0 10px 0;
     font-size: 1.2rem;
+    line-height: 1.3;
 }
 
 .project-card-title a {
@@ -108,17 +129,69 @@ footer {
 }
 
 .project-card-summary {
-    margin: 0 0 12px 0;
+    margin: 0 0 14px 0;
     color: #555;
-    font-size: 0.95rem;
+    font-size: 0.98rem;
+    line-height: 1.5;
+    flex-grow: 1;
 }
 
 .project-card-link {
     font-size: 0.9rem;
     font-weight: bold;
     text-decoration: none;
+    margin-top: auto;
 }
 
+/* frecce decorative */
+.projects-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 38px;
+    height: 38px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 2px solid #333;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    color: #333;
+    z-index: 2;
+    pointer-events: none; /* solo decorative */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.projects-arrow--left {
+    left: -8px;
+}
+
+.projects-arrow--right {
+    right: -8px;
+}
+
+/* leggera sfumatura laterale */
+.projects-scroll-shell::before,
+.projects-scroll-shell::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 36px;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.projects-scroll-shell::before {
+    left: 0;
+    background: linear-gradient(to right, white, rgba(255,255,255,0));
+}
+
+.projects-scroll-shell::after {
+    right: 0;
+    background: linear-gradient(to left, white, rgba(255,255,255,0));
+}
 /* =========================
    Lista post (Home)
    ========================= */
@@ -161,28 +234,23 @@ footer {
     color: #888;
 }
 
-
-/* =========================
-   Responsive
-   ========================= */
-
 @media (max-width: 768px) {
     .project-card {
         flex: 0 0 85%;
-    }
-    .container {
-        grid-template-columns: 1fr;
-        grid-template-areas:
-            "header"
-            "main"
-            "sidebar"
-            "footer";
+        max-width: 85%;
     }
 
-    .post-item {
-        border-left-width: 3px;
+    .projects-arrow {
+        width: 30px;
+        height: 30px;
+        font-size: 0.95rem;
     }
-    .path-list {
-        grid-template-columns: 1fr;
+
+    .projects-arrow--left {
+        left: -4px;
+    }
+
+    .projects-arrow--right {
+        right: -4px;
     }
 }

@@ -1,6 +1,8 @@
 ---
 Title: Home Page
+BodyClass: home-page
 ---
+
 @using Statiq.Common
 @using System.Globalization
 
@@ -53,36 +55,48 @@ Title: Home Page
 <section class="home-projects">
     <h2>Progetti</h2>
     <p class="section-intro">
-        Alcuni dei progetti a cui sto lavorando o che ho completato. Clicca su un progetto per saperne di più.
+        Alcuni dei progetti su cui sto lavorando o che sto documentando nel tempo.
     </p>
+
     @if (projects.Any())
     {
-        <div class="project-scroll">
-            @foreach (var project in projects)
-            {
-                <article class ="project-card">
-                    @if (!string.IsNullOrWhiteSpace(project.Stato)) // Se lo stato è presente, mostriamolo
-                    {
-                        <span class="project-status">@project.Stato</span>
-                    }
-                    <h3 class="project-card-title">
-                        <a href="@project.Link">@project.Titolo</a>
-                    </h3>
+        <div class="projects-scroll-shell">
+            <div class="projects-arrow projects-arrow--left" aria-hidden="true">
+                &#10094;
+            </div>
 
-                    <p class="project-card-summary">
-                        @project.Descrizione
-                    </p>
+            <div class="projects-scroll">
+                @foreach (var project in projects)
+                {
+                    <article class="project-card">
+                        @if (!string.IsNullOrWhiteSpace(project.Stato))
+                        {
+                            <span class="project-status">@project.Stato</span>
+                        }
 
-                    <a class="project-card-link" href="@project.Link">
-                        Vai al progetto →
-                    </a>
-                </article>
-            }
+                        <h3 class="project-card-title">
+                            <a href="@project.Link">@project.Titolo</a>
+                        </h3>
+
+                        <p class="project-card-summary">
+                            @project.Descrizione
+                        </p>
+
+                        <a class="project-card-link" href="@project.Link">
+                            Vai al progetto →
+                        </a>
+                    </article>
+                }
+            </div>
+
+            <div class="projects-arrow projects-arrow--right" aria-hidden="true">
+                &#10095;
+            </div>
         </div>
     }
     else
     {
-        <p class="project-empty">Nessun progetto trovato.</p>
+        <p class="post-empty">Nessun progetto trovato.</p>
     }
 </section>
 
